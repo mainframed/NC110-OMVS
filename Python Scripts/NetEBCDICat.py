@@ -120,7 +120,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 #start argument parser
 parser = argparse.ArgumentParser(description='Script to communicate with netcat on OMVS (z/OS IBM Mainframe UNIX)',epilog='Damn you EBCDIC!')
-parser.add_argument('-l','--listen',help='listen for incomming connections?', default=False,dest='server',action='store_true')
+parser.add_argument('-l','--listen',help='listen for incomming connections', default=False,dest='server',action='store_true')
 parser.add_argument('-i','--ip', help='remote host IP address',dest='ip')
 parser.add_argument('-p','--port', help='Port to listen on or to connect to',required=True,dest='port')
 parser.add_argument('-d','--dinologo',help='display cool ass logo', default=False,dest='logo',action='store_true')
@@ -144,17 +144,28 @@ if results.logo:
               / \   =/  ~~--~~{    ./|    ~-.     `-..__\\\_//_.-'
              {   \  +\         \  =\ (        ~ - . _ _ _..---~
              |  | {   }         \   \_\\
-            '---.o___,'       .o___,' ''' + bcolors.BLUE + "netEBCDICat by" +bcolors.YELLOW+ " @mainframed767" + bcolors.ENDC
+            '---.o___,'       .o___,' ''' + bcolors.BLUE + "netEBCDICat by" +bcolors.YELLOW+ " Soldier of Fortran" + bcolors.ENDC
 
 if not results.server:
-	MFsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	MFsock.connect( (results.ip, int(results.port)) )
+	try:
+		MFsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		MFsock.connect( (results.ip, int(results.port)) )
+	except Exception, e:
+    		print "could not connect to ",results.ip,":",results.port
+		print e
+		sys.exit(0)
+
 else:
-	server = socket.socket()
-	server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	server.bind((socket.gethostname(), int(results.port))) 
-	server.listen(1)
-	MFsock, address = server.accept()
+	try:
+		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		server.bind((socket.gethostname(), int(results.port))) 
+		server.listen(1)
+		MFsock, address = server.accept()
+	except Exception, e:
+    		print "could not open server on port:", results.port
+		print e
+		sys.exit(0)
 
 MFsock.setblocking(0)
 while(1):
