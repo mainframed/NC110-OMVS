@@ -141,21 +141,23 @@ if results.logo:
   _.-'q  }~     /       }     {        ;    \__/
  {'__,  /      (       /      {       /      `. ,~~|   .     .
   `''..='~~-.__(      /_      |      /- _      `..-'   \\\   //
-              / \   =/  ~~--~~{    ./|    ~-.     `-..__\\\_//_.-'
-             {   \  +\         \  =\ (        ~ - . _ _ _..---~
+              / \   =/  ~~--~~{    ./|    ~-.     `-..__\\\_//_._
+             {   \  +\         \  =\ (        ~ - . _ _ _..--~'"
              |  | {   }         \   \_\\
-            '---.o___,'       .o___,' ''' + bcolors.BLUE + "netEBCDICat by" +bcolors.YELLOW+ " Soldier of Fortran" + bcolors.ENDC
+            '---.o___,'       .o___,' \n''' + bcolors.BLUE + "\t\tnetEBCDICat by" +bcolors.YELLOW+ " Soldier of Fortran" + bcolors.ENDC
 
 if not results.server:
 	try:
 		MFsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		MFsock.connect( (results.ip, int(results.port)) )
 	except Exception, e:
-    		print "could not connect to ",results.ip,":",results.port
-		print e
+    		print  bcolors.RED + "[ERR] could not connect to ",results.ip,":",results.port,"" + bcolors.ENDC
+		print bcolors.RED + "",e,"" + bcolors.ENDC
 		sys.exit(0)
 
 else:
+	if not results.ip == "":
+		print bcolors.YELLOW + "[WARN] You defined IP address", results.ip, "but are in listening mode. Ignored." + bcolors.ENDC
 	try:
 		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -163,8 +165,8 @@ else:
 		server.listen(1)
 		MFsock, address = server.accept()
 	except Exception, e:
-    		print "could not open server on port:", results.port
-		print e
+    		print bcolors.RED + "[ERR] could not open server on port:", results.port,"" + bcolors.ENDC
+		print bcolors.RED + "",e,"" + bcolors.ENDC
 		sys.exit(0)
 
 MFsock.setblocking(0)
